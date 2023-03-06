@@ -18,4 +18,8 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(MainActivity.this, BigTravel.class);
         startActivity(intent);
     }
+    public void onClick2(View view){
+        Intent intent = new Intent(this, RouteDay.class);
+        startActivity(intent);
+    }
 }
