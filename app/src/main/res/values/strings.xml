@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Travel</string>
+    <string name="title_activity_walk">Walk</string>
 </resources>

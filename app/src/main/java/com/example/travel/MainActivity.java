@@ -22,8 +22,4 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, RouteDay.class);
         startActivity(intent);
     }
-    public void onClick3(View view){
-        Intent intent = new Intent(this,Walk.class);
-        startActivity(intent);
-    }
 }
