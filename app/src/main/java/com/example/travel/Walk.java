@@ -1,12 +1,16 @@
-import android.Manifest;
-import android.content.Context;
-import android.content.pm.PackageManager;
-import android.os.Bundle;
-import android.preference.PreferenceManager;
+package com.example.travel;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+
+import android.content.Context;
+import android.content.pm.PackageManager;
+import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import org.osmdroid.config.Configuration;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
@@ -14,28 +18,21 @@ import org.osmdroid.views.MapView;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity{
+public class Walk extends AppCompatActivity {
     private final int REQUEST_PERMISSIONS_REQUEST_CODE = 1;
     private MapView map = null;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_walk);
+        /*Configuration.getInstance().load(getAppLicationContext(),PreferenceManager.getDefaultSharedPreferences(getApplicationContext()));
+        MapView mapView = new MapView(this);
+        mapView.setTileSource(TileSourceFactory.MAPNIK);
 
-        //handle permissions first, before map is created. not depicted here
-
-        //load/initialize the osmdroid configuration, this can be done
+        setContentView(mapView);*/
         Context ctx = getApplicationContext();
         Configuration.getInstance().load(ctx, PreferenceManager.getDefaultSharedPreferences(ctx));
-        //setting this before the layout is inflated is a good idea
-        //it 'should' ensure that the map has a writable location for the map cache, even without permissions
-        //if no tiles are displayed, you can try overriding the cache path using Configuration.getInstance().setCachePath
-        //see also StorageUtils
-        //note, the load method also sets the HTTP User Agent to your application's package name, abusing osm's
-        //tile servers will get you banned based on this string
-
-        //inflate and create the map
-        setContentView(R.layout.activity_main);
 
         map = (MapView) findViewById(R.id.map);
         map.setTileSource(TileSourceFactory.MAPNIK);
@@ -47,27 +44,16 @@ public class MainActivity extends AppCompatActivity{
                 Manifest.permission.WRITE_EXTERNAL_STORAGE
         ));
     }
-
     @Override
     public void onResume() {
         super.onResume();
-        //this will refresh the osmdroid configuration on resuming.
-        //if you make changes to the configuration, use
-        //SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        //Configuration.getInstance().load(this, PreferenceManager.getDefaultSharedPreferences(this));
-        map.onResume(); //needed for compass, my location overlays, v6.0.0 and up
+        map.onResume();
     }
-
     @Override
     public void onPause() {
         super.onPause();
-        //this will refresh the osmdroid configuration on resuming.
-        //if you make changes to the configuration, use
-        //SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        //Configuration.getInstance().save(this, prefs);
-        map.onPause();  //needed for compass, my location overlays, v6.0.0 and up
+        map.onPause();
     }
-
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         ArrayList<String> permissionsToRequest = new ArrayList<>();
@@ -81,7 +67,6 @@ public class MainActivity extends AppCompatActivity{
                     REQUEST_PERMISSIONS_REQUEST_CODE);
         }
     }
-
     private void requestPermissionsIfNecessary(String[] permissions) {
         ArrayList<String> permissionsToRequest = new ArrayList<>();
         for (String permission : permissions) {
@@ -91,11 +76,16 @@ public class MainActivity extends AppCompatActivity{
                 permissionsToRequest.add(permission);
             }
         }
-        if (permissionsToRequest.size > 0) {
-            ActivityCompat.requestPermissions(
-                    this,
-                    permissionsToRequest.toArray(new String[0]),
-                    REQUEST_PERMISSIONS_REQUEST_CODE);
-        }
+    }
+    if(permissionsToRequest.size > 0) {
+        ActivityCompat.requestPermissions(
+                this,
+                permissionsToRequest.toArray(new String[0]),
+                REQUEST_PERMISSIONS_REQUEST_CODE);
+    }
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        mMapView = new MapView(inflater.getContext(), 256, getContext());
+        return mMapView;
     }
 }

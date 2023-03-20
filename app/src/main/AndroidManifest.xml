@@ -2,6 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"  />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
     <supports-screens
         android:anyDensity="true"
         android:largeScreens="true"
@@ -22,22 +27,31 @@
         tools:targetApi="31">
         <activity
             android:name=".Walk"
-            android:exported="false" />
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
         <!--
-             TODO: Before you run your application, you need a Google Maps API key.
+        <activity
+           android:name=".W"
+           android:exported="false" />*/
 
-             To get one, follow the directions here:
+            TODO: Before you run your application, you need a Google Maps API key.
 
-                https://developers.google.com/maps/documentation/android-sdk/get-api-key
+            To get one, follow the directions here:
 
-             Once you have your API key (it starts with "AIza"), define a new property in your
-             project's local.properties file (e.g. MAPS_API_KEY=Aiza...), and replace the
-             "YOUR_API_KEY" string in this file with "${MAPS_API_KEY}".
+               https://developers.google.com/maps/documentation/android-sdk/get-api-key
+
+            Once you have your API key (it starts with "AIza"), define a new property in your
+            project's local.properties file (e.g. MAPS_API_KEY=Aiza...), and replace the
+            "YOUR_API_KEY" string in this file with "${MAPS_API_KEY}".
         -->
-        <meta-data
-            android:name="com.google.android.geo.API_KEY"
-            android:value="${MAPS_API_KEY}" />
-
+        <!--
+<meta-data
+           android:name="com.google.android.geo.API_KEY"
+           android:value="${MAPS_API_KEY}" />
+        -->
         <activity
             android:name=".RouteDay"
             android:exported="false" />
