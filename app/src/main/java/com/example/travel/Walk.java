@@ -12,6 +12,7 @@ import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import org.osmdroid.views.overlay.ScaleBarOverlay;
 
 import org.osmdroid.config.Configuration;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
@@ -36,6 +37,8 @@ public class Walk extends AppCompatActivity {
 
         map = (MapView) findViewById(R.id.map);
         map.setTileSource(TileSourceFactory.MAPNIK);
+        map.setBuiltInZoomControls(true);
+        map.setMultiTouchControls(true);
 
         requestPermissionsIfNecessary(Manifest.permission.WRITE_EXTERNAL_STORAGE.split(""));
     }
