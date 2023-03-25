@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Walk extends AppCompatActivity {
+
     private final int REQUEST_PERMISSIONS_REQUEST_CODE = 1;
     private MapView map = null;
 
