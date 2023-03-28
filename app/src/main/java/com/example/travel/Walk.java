@@ -12,6 +12,9 @@ import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import org.osmdroid.api.IMapController;
+import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.overlay.ScaleBarOverlay;
 
 import org.osmdroid.config.Configuration;
@@ -25,34 +28,35 @@ import java.util.Arrays;
 public class Walk extends AppCompatActivity {
 
     private final int REQUEST_PERMISSIONS_REQUEST_CODE = 1;
-    private MapView map = null;
+    private MapView mapView = null;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        Context ctx = getApplicationContext();
-        Configuration.getInstance().load(ctx, PreferenceManager.getDefaultSharedPreferences(ctx));
-
-        setContentView(R.layout.activity_walk);
-
-        map = (MapView) findViewById(R.id.map);
-        map.setTileSource(TileSourceFactory.MAPNIK);
-        map.setBuiltInZoomControls(true);
-        map.setMultiTouchControls(true);
-
-        requestPermissionsIfNecessary(Manifest.permission.WRITE_EXTERNAL_STORAGE.split(""));
+        setContentView(R.layout.activity_main);
+        Configuration.getInstance().load(getApplicationContext(), PreferenceManager.getDefaultSharedPreferences(getApplicationContext()));
+        mapView = new MapView(this);
+        mapView.setTileSource(TileSourceFactory.MAPNIK);
+        mapView.setBuiltInZoomControls(true);
+        mapView.setMultiTouchControls(true);
+        mapView.setMinZoomLevel(4.0);
+        IMapController mapController = mapView.getController();
+        mapController.setZoom(9.5);
+        GeoPoint startPoint = new GeoPoint(51.6, 58.29);
+        mapController.setCenter(startPoint);
+        // установка карты в макет
+        setContentView(mapView);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        map.onResume();
+        mapView.onResume();
     }
     @Override
     public void onPause() {
         super.onPause();
-        map.onPause();
+        mapView.onPause();
     }
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
