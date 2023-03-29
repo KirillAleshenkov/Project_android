@@ -15,11 +15,16 @@ import android.view.ViewGroup;
 
 import org.osmdroid.api.IMapController;
 import org.osmdroid.util.GeoPoint;
+import org.osmdroid.views.overlay.ItemizedIconOverlay;
+import org.osmdroid.views.overlay.ItemizedOverlayWithFocus;
+import org.osmdroid.views.overlay.Overlay;
+import org.osmdroid.views.overlay.OverlayItem;
 import org.osmdroid.views.overlay.ScaleBarOverlay;
 
 import org.osmdroid.config.Configuration;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.views.MapView;
+import org.osmdroid.views.overlay.gestures.RotationGestureOverlay;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -29,6 +34,7 @@ public class Walk extends AppCompatActivity {
 
     private final int REQUEST_PERMISSIONS_REQUEST_CODE = 1;
     private MapView mapView = null;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -40,14 +46,19 @@ public class Walk extends AppCompatActivity {
         mapView.setBuiltInZoomControls(true);
         mapView.setMultiTouchControls(true);
         mapView.setMinZoomLevel(4.0);
+        //Статичный поворот карты
+        //mapView.setMapOrientation(45.0f);
         IMapController mapController = mapView.getController();
         mapController.setZoom(9.5);
         GeoPoint startPoint = new GeoPoint(51.6, 58.29);
         mapController.setCenter(startPoint);
+        //Поворот карты с помощью жестов
+        RotationGestureOverlay rotationGestureOverlay = new RotationGestureOverlay(mapView);
+        mapView.getOverlays().add(rotationGestureOverlay);
+        rotationGestureOverlay.setEnabled(true);
         // установка карты в макет
         setContentView(mapView);
     }
-
     @Override
     public void onResume() {
         super.onResume();
@@ -66,22 +77,6 @@ public class Walk extends AppCompatActivity {
             permissionsToRequest.add(permissions[i]);
         }
         if (permissionsToRequest.size()> 0) {
-            ActivityCompat.requestPermissions(
-                    this,
-                    permissionsToRequest.toArray(new String[0]),
-                    REQUEST_PERMISSIONS_REQUEST_CODE);
-        }
-    }
-    private void requestPermissionsIfNecessary(String[] permissions) {
-        ArrayList<String> permissionsToRequest = new ArrayList<>();
-        for (String permission : permissions) {
-            if (ContextCompat.checkSelfPermission(this, permission)
-                    != PackageManager.PERMISSION_GRANTED) {
-                // Permission is not granted
-                permissionsToRequest.add(permission);
-            }
-        }
-        if (permissionsToRequest.size() > 0) {
             ActivityCompat.requestPermissions(
                     this,
                     permissionsToRequest.toArray(new String[0]),
