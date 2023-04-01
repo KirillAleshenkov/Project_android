@@ -54,8 +54,10 @@ public class Walk extends AppCompatActivity {
         mapController.setCenter(startPoint);
         //Поворот карты с помощью жестов
         RotationGestureOverlay rotationGestureOverlay = new RotationGestureOverlay(mapView);
-        mapView.getOverlays().add(rotationGestureOverlay);
+        rotationGestureOverlay.setAngleDelta(45);
         rotationGestureOverlay.setEnabled(true);
+        mapView.getOverlays().add(rotationGestureOverlay);
+        //rotationGestureOverlay.setEnabled(true);
         // установка карты в макет
         setContentView(mapView);
     }
