@@ -56,9 +56,36 @@ public class Walk extends AppCompatActivity {
         RotationGestureOverlay rotationGestureOverlay = new RotationGestureOverlay(mapView);
         mapView.getOverlays().add(rotationGestureOverlay);
         rotationGestureOverlay.setEnabled(true);
-        // установка карты в макет
+
+
+
+
+
+        //your items
+        ArrayList<OverlayItem> items = new ArrayList<OverlayItem>();
+        items.add(new OverlayItem("Title", "Description", new GeoPoint(51.6,58.29)));
+
+
+        /*ItemizedOverlayWithFocus<OverlayItem> mOverlay = new ItemizedOverlayWithFocus<OverlayItem>(items,
+                new ItemizedIconOverlay.OnItemGestureListener<OverlayItem>() {
+            @Override
+            public boolean onItemSingleTapUp(final int index,final OverlayItem item) {
+                return true;
+            }
+
+            @Override
+            public boolean onItemLongPress(final int index,final OverlayItem item) {
+                return false;
+            }
+        })
+        mOverlay.setFocusItemsOnTap(true);
+
+        mapView.getOverlays().add(mOverlay);*/
+        mapView.getOverlays().add(items.get(0));
         setContentView(mapView);
+
     }
+
     @Override
     public void onResume() {
         super.onResume();
