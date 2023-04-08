@@ -7,9 +7,11 @@ import android.Manifest;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -17,6 +19,7 @@ import org.osmdroid.api.IMapController;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.overlay.ItemizedIconOverlay;
 import org.osmdroid.views.overlay.ItemizedOverlayWithFocus;
+import org.osmdroid.views.overlay.Marker;
 import org.osmdroid.views.overlay.Overlay;
 import org.osmdroid.views.overlay.OverlayItem;
 import org.osmdroid.views.overlay.ScaleBarOverlay;
@@ -50,7 +53,7 @@ public class Walk extends AppCompatActivity {
         //mapView.setMapOrientation(45.0f);
         IMapController mapController = mapView.getController();
         mapController.setZoom(9.5);
-        GeoPoint startPoint = new GeoPoint(51.6, 58.29);
+        GeoPoint startPoint = new GeoPoint(51.2049,58.5668);
         mapController.setCenter(startPoint);
         //Поворот карты с помощью жестов
         RotationGestureOverlay rotationGestureOverlay = new RotationGestureOverlay(mapView);
@@ -62,8 +65,8 @@ public class Walk extends AppCompatActivity {
 
 
         //your items
-        ArrayList<OverlayItem> items = new ArrayList<OverlayItem>();
-        items.add(new OverlayItem("Title", "Description", new GeoPoint(51.6,58.29)));
+        //ArrayList<OverlayItem> items = new ArrayList<OverlayItem>();
+        //items.add(new OverlayItem("Title", "Description", new GeoPoint(51.6,58.29)));
 
 
         /*ItemizedOverlayWithFocus<OverlayItem> mOverlay = new ItemizedOverlayWithFocus<OverlayItem>(items,
@@ -81,8 +84,35 @@ public class Walk extends AppCompatActivity {
         mOverlay.setFocusItemsOnTap(true);
 
         mapView.getOverlays().add(mOverlay);*/
-        mapView.getOverlays().add(items.get(0));
+        //mapView.getOverlays().add();
+        //setContentView(mapView);
+
+
+        Marker marker = new Marker(mapView);
+        //marker.setPosition(new GeoPoint(51.2049,58.5668));
+        Drawable drawable = getResources().getDrawable(R.drawable.free);
+        //drawable.setS;
+        marker.setIcon(drawable);
+        mapView.getOverlays().add(marker);
+        mapView.invalidate();
+        marker.setTitle("Маркер");
+        marker.setSnippet("Комментарий");
         setContentView(mapView);
+
+
+        Overlay mOverlay = new Overlay() {
+
+            @Override
+            public boolean onScroll(MotionEvent pEvent1, MotionEvent pEvent2, float pDistanceX, float pDistanceY, MapView pMapView) {
+
+                marker.setPosition(new GeoPoint((float) pMapView.getMapCenter().getLatitude(),
+                        (float) pMapView.getMapCenter().getLongitude()));
+
+                return super.onScroll(pEvent1, pEvent2, pDistanceX, pDistanceY, pMapView);
+            }
+        };
+
+        mapView.getOverlays().add(mOverlay);
 
     }
 
