@@ -3,10 +3,14 @@ package com.example.travel;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
+
 import android.Manifest;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Canvas;
+import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -16,7 +20,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import org.osmdroid.api.IMapController;
+import org.osmdroid.util.BoundingBox;
 import org.osmdroid.util.GeoPoint;
+import org.osmdroid.views.Projection;
+import org.osmdroid.views.overlay.GroundOverlay;
 import org.osmdroid.views.overlay.ItemizedIconOverlay;
 import org.osmdroid.views.overlay.ItemizedOverlayWithFocus;
 import org.osmdroid.views.overlay.Marker;
@@ -35,109 +42,170 @@ import java.util.Arrays;
 
 public class Walk extends AppCompatActivity {
 
-    private final int REQUEST_PERMISSIONS_REQUEST_CODE = 1;
-    private MapView mapView = null;
-
+    MapView mMapView = null;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Context ctx = getApplicationContext();
+        Configuration.getInstance().load(ctx, PreferenceManager.getDefaultSharedPreferences(ctx));
+
         setContentView(R.layout.activity_main);
-        Configuration.getInstance().load(getApplicationContext(), PreferenceManager.getDefaultSharedPreferences(getApplicationContext()));
-        mapView = new MapView(this);
-        mapView.setTileSource(TileSourceFactory.MAPNIK);
-        mapView.setBuiltInZoomControls(true);
-        mapView.setMultiTouchControls(true);
-        mapView.setMinZoomLevel(4.0);
-        //Статичный поворот карты
-        //mapView.setMapOrientation(45.0f);
-        IMapController mapController = mapView.getController();
-        mapController.setZoom(9.5);
-        GeoPoint startPoint = new GeoPoint(51.2049,58.5668);
-        mapController.setCenter(startPoint);
-        //Поворот карты с помощью жестов
-        RotationGestureOverlay rotationGestureOverlay = new RotationGestureOverlay(mapView);
-        mapView.getOverlays().add(rotationGestureOverlay);
-        rotationGestureOverlay.setEnabled(true);
 
+        mMapView = (MapView) findViewById(R.id.map);
+        mMapView.setTileSource(TileSourceFactory.MAPNIK);
 
+        mMapView.setBuiltInZoomControls(true);
+        mMapView.setMultiTouchControls(true);
+        GeoPoint overlayCenterPoint = new GeoPoint(50.450667, 30.523193);
+        IMapController mapController = mMapView.getController();
+        mapController.setZoom(17f);
+        mapController.setCenter(overlayCenterPoint);
+        mMapView.setMapOrientation(0.0f);
 
+        GroundOverlay myGroundOverlay = new GroundOverlay();
+        myGroundOverlay.setPosition(overlayCenterPoint);
+        Drawable d = ResourcesCompat.getDrawable(getResources(), R.drawable.free, null);
+        myGroundOverlay.setImage(d.mutate());
+        myGroundOverlay.setDimensions(200.0f);
+        myGroundOverlay.setTransparency(0.25f);
+        myGroundOverlay.setBearing(0);
+        mMapView.getOverlays().add(myGroundOverlay);
 
-
-        //your items
-        //ArrayList<OverlayItem> items = new ArrayList<OverlayItem>();
-        //items.add(new OverlayItem("Title", "Description", new GeoPoint(51.6,58.29)));
-
-
-        /*ItemizedOverlayWithFocus<OverlayItem> mOverlay = new ItemizedOverlayWithFocus<OverlayItem>(items,
-                new ItemizedIconOverlay.OnItemGestureListener<OverlayItem>() {
-            @Override
-            public boolean onItemSingleTapUp(final int index,final OverlayItem item) {
-                return true;
-            }
-
-            @Override
-            public boolean onItemLongPress(final int index,final OverlayItem item) {
-                return false;
-            }
-        })
-        mOverlay.setFocusItemsOnTap(true);
-
-        mapView.getOverlays().add(mOverlay);*/
-        //mapView.getOverlays().add();
-        //setContentView(mapView);
-
-
-        Marker marker = new Marker(mapView);
-        //marker.setPosition(new GeoPoint(51.2049,58.5668));
-        Drawable drawable = getResources().getDrawable(R.drawable.free);
-        //drawable.setS;
-        marker.setIcon(drawable);
-        mapView.getOverlays().add(marker);
-        mapView.invalidate();
-        marker.setTitle("Маркер");
-        marker.setSnippet("Комментарий");
-        setContentView(mapView);
-
-
-        Overlay mOverlay = new Overlay() {
-
-            @Override
-            public boolean onScroll(MotionEvent pEvent1, MotionEvent pEvent2, float pDistanceX, float pDistanceY, MapView pMapView) {
-
-                marker.setPosition(new GeoPoint((float) pMapView.getMapCenter().getLatitude(),
-                        (float) pMapView.getMapCenter().getLongitude()));
-
-                return super.onScroll(pEvent1, pEvent2, pDistanceX, pDistanceY, pMapView);
-            }
-        };
-
-        mapView.getOverlays().add(mOverlay);
-
+        mMapView.invalidate();
     }
 
     @Override
-    public void onResume() {
+    protected void onResume() {
         super.onResume();
-        mapView.onResume();
+        mMapView.onResume();
     }
+
     @Override
-    public void onPause() {
+    protected void onPause() {
         super.onPause();
-        mapView.onPause();
+        mMapView.onPause();
     }
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        ArrayList<String> permissionsToRequest = new ArrayList<>();
-        for (int i = 0; i < grantResults.length; i++) {
-            permissionsToRequest.add(permissions[i]);
+
+    public class GroundOverlay extends Overlay {
+
+        protected Drawable mImage;
+        protected GeoPoint mPosition;
+        protected float mBearing;
+        protected float mWidth, mHeight;
+        protected float mTransparency;
+        public final static float NO_DIMENSION = -1.0f;
+        protected Point mPositionPixels, mSouthEastPixels;
+
+        public GroundOverlay() {
+            super();
+            mWidth = 10.0f;
+            mHeight = NO_DIMENSION;
+            mBearing = 0.0f;
+            mTransparency = 0.0f;
+            mPositionPixels = new Point();
+            mSouthEastPixels = new Point();
         }
-        if (permissionsToRequest.size()> 0) {
-            ActivityCompat.requestPermissions(
-                    this,
-                    permissionsToRequest.toArray(new String[0]),
-                    REQUEST_PERMISSIONS_REQUEST_CODE);
+
+        public void setImage(Drawable image){
+            mImage = image;
         }
+
+        public Drawable getImage(){
+            return mImage;
+        }
+
+        public GeoPoint getPosition(){
+            return mPosition.clone();
+        }
+
+        public void setPosition(GeoPoint position){
+            mPosition = position.clone();
+        }
+
+        public float getBearing(){
+            return mBearing;
+        }
+
+        public void setBearing(float bearing){
+            mBearing = bearing;
+        }
+
+        public void setDimensions(float width){
+            mWidth = width;
+            mHeight = NO_DIMENSION;
+        }
+
+        public void setDimensions(float width, float height){
+            mWidth = width;
+            mHeight = height;
+        }
+
+        public float getHeight(){
+            return mHeight;
+        }
+
+        public float getWidth(){
+            return mWidth;
+        }
+
+        public void setTransparency(float transparency){
+            mTransparency = transparency;
+        }
+
+        public float getTransparency(){
+            return mTransparency;
+        }
+
+        protected void computeHeight(){
+            if (mHeight == NO_DIMENSION && mImage != null){
+                mHeight = mWidth * mImage.getIntrinsicHeight() / mImage.getIntrinsicWidth();
+            }
+        }
+
+        /** @return the bounding box, ignoring the bearing of the GroundOverlay (similar to Google Maps API) */
+        public BoundingBox getBoundingBox(){
+            computeHeight();
+            GeoPoint pEast = mPosition.destinationPoint(mWidth, 90.0f);
+            GeoPoint pSouthEast = pEast.destinationPoint(mHeight, -180.0f);
+            double north = mPosition.getLatitude()*2 - pSouthEast.getLatitude();
+            double west = mPosition.getLongitude()*2 - pEast.getLongitude();
+            return new BoundingBox(north, pEast.getLongitude(), pSouthEast.getLatitude(), west);
+        }
+
+        public void setPositionFromBounds(BoundingBox bb){
+            mPosition = bb.getCenterWithDateLine();
+            GeoPoint pEast = new GeoPoint(mPosition.getLatitude(), bb.getLonEast());
+            GeoPoint pWest = new GeoPoint(mPosition.getLatitude(), bb.getLonWest());
+            mWidth = (float)pEast.distanceToAsDouble(pWest);
+            GeoPoint pSouth = new GeoPoint(bb.getLatSouth(), mPosition.getLongitude());
+            GeoPoint pNorth = new GeoPoint(bb.getLatNorth(), mPosition.getLongitude());
+            mHeight = (float)pSouth.distanceToAsDouble(pNorth);
+        }
+
+        @Override public void draw(Canvas canvas, MapView mapView, boolean shadow) {
+            if (shadow)
+                return;
+            if (mImage == null)
+                return;
+
+            computeHeight();
+
+            final Projection pj = mapView.getProjection();
+
+            pj.toPixels(mPosition, mPositionPixels);
+            GeoPoint pEast = mPosition.destinationPoint(mWidth / 2, 90.0f);
+            GeoPoint pSouthEast = pEast.destinationPoint(mHeight / 2, -180.0f);
+            pj.toPixels(pSouthEast, mSouthEastPixels);
+            int hWidth = mSouthEastPixels.x - mPositionPixels.x;
+            int hHeight = mSouthEastPixels.y - mPositionPixels.y;
+            mImage.setBounds(-hWidth, -hHeight, hWidth, hHeight);
+
+            mImage.setAlpha(255 - (int) (mTransparency * 255));
+
+            drawAt(canvas, mImage, mPositionPixels.x, mPositionPixels.y, false, -mBearing);
+        }
+
     }
 }
