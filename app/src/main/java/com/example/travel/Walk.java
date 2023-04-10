@@ -55,6 +55,22 @@ public class Walk extends AppCompatActivity {
         mapController.setZoom(9.5);
         GeoPoint startPoint = new GeoPoint(51.2049,58.5668);
         mapController.setCenter(startPoint);
+
+
+
+
+        Marker marker = new Marker(mapView);
+        marker.setPosition(new GeoPoint(51.2049,58.5668));
+        Drawable drawable = getResources().getDrawable(R.drawable.free);
+        marker.setIcon(drawable);
+        mapView.getOverlays().add(marker);
+        marker.setTitle("Маркер");
+        marker.setSnippet("Комментарий");
+        marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+
+
+
+
         //Поворот карты с помощью жестов
         RotationGestureOverlay rotationGestureOverlay = new RotationGestureOverlay(mapView);
         mapView.getOverlays().add(rotationGestureOverlay);
@@ -88,19 +104,13 @@ public class Walk extends AppCompatActivity {
         //setContentView(mapView);
 
 
-        Marker marker = new Marker(mapView);
-        //marker.setPosition(new GeoPoint(51.2049,58.5668));
-        Drawable drawable = getResources().getDrawable(R.drawable.free);
-        //drawable.setS;
-        marker.setIcon(drawable);
-        mapView.getOverlays().add(marker);
-        mapView.invalidate();
-        marker.setTitle("Маркер");
-        marker.setSnippet("Комментарий");
+
         setContentView(mapView);
 
+        //int latitudeSpan = mapView.getLatitudeSpanDou
 
-        Overlay mOverlay = new Overlay() {
+
+        /*Overlay mOverlay = new Overlay() {
 
             @Override
             public boolean onScroll(MotionEvent pEvent1, MotionEvent pEvent2, float pDistanceX, float pDistanceY, MapView pMapView) {
@@ -112,10 +122,9 @@ public class Walk extends AppCompatActivity {
             }
         };
 
-        mapView.getOverlays().add(mOverlay);
+        mapView.getOverlays().add(mOverlay);*/
 
     }
-
     @Override
     public void onResume() {
         super.onResume();
