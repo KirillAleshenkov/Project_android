@@ -7,6 +7,7 @@ import android.Manifest;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
+//import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -14,6 +15,8 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+
+//import com.google.android.gms.maps.MapView;
 
 import org.osmdroid.api.IMapController;
 import org.osmdroid.util.GeoPoint;
@@ -53,20 +56,22 @@ public class Walk extends AppCompatActivity {
         //mapView.setMapOrientation(45.0f);
         IMapController mapController = mapView.getController();
         mapController.setZoom(9.5);
-        GeoPoint startPoint = new GeoPoint(51.2049,58.5668);
+        GeoPoint loc = new GeoPoint(51.2049,58.5668);
+        GeoPoint startPoint = loc;
         mapController.setCenter(startPoint);
 
 
 
 
         Marker marker = new Marker(mapView);
-        marker.setPosition(new GeoPoint(51.2049,58.5668));
-        Drawable drawable = getResources().getDrawable(R.drawable.free);
+
+        Drawable drawable = getResources().getDrawable(R.drawable.marker);
         marker.setIcon(drawable);
-        mapView.getOverlays().add(marker);
+
         marker.setTitle("Маркер");
         marker.setSnippet("Комментарий");
         marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+        marker.setPosition(loc);
 
 
 
@@ -75,6 +80,7 @@ public class Walk extends AppCompatActivity {
         RotationGestureOverlay rotationGestureOverlay = new RotationGestureOverlay(mapView);
         mapView.getOverlays().add(rotationGestureOverlay);
         rotationGestureOverlay.setEnabled(true);
+        mapView.getOverlays().add(marker);
 
 
 
@@ -145,8 +151,7 @@ public class Walk extends AppCompatActivity {
         if (permissionsToRequest.size()> 0) {
             ActivityCompat.requestPermissions(
                     this,
-                    permissionsToRequest.toArray(new String[0]),
-                    REQUEST_PERMISSIONS_REQUEST_CODE);
+                    permissionsToRequest.toArray(new String[0]),REQUEST_PERMISSIONS_REQUEST_CODE);
         }
     }
 }
