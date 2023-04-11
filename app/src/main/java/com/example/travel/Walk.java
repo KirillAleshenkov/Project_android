@@ -1,5 +1,7 @@
 package com.example.travel;
 
+import static android.graphics.Color.rgb;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -25,6 +27,7 @@ import org.osmdroid.views.overlay.ItemizedOverlayWithFocus;
 import org.osmdroid.views.overlay.Marker;
 import org.osmdroid.views.overlay.Overlay;
 import org.osmdroid.views.overlay.OverlayItem;
+import org.osmdroid.views.overlay.Polyline;
 import org.osmdroid.views.overlay.ScaleBarOverlay;
 
 import org.osmdroid.config.Configuration;
@@ -35,6 +38,7 @@ import org.osmdroid.views.overlay.gestures.RotationGestureOverlay;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class Walk extends AppCompatActivity {
 
@@ -81,6 +85,18 @@ public class Walk extends AppCompatActivity {
         mapView.getOverlays().add(rotationGestureOverlay);
         rotationGestureOverlay.setEnabled(true);
         mapView.getOverlays().add(marker);
+
+
+
+        List<GeoPoint> geoPoint = new ArrayList<>();
+        geoPoint.add(new GeoPoint(51.3049,58.5668));
+        geoPoint.add(new GeoPoint(51.4049,58.7668));
+        geoPoint.add(new GeoPoint(51.5049,58.5668));
+        Polyline line = new Polyline();   //see note below!
+        line.setColor(rgb(0,255,0));
+        line.setWidth(5);
+        line.setPoints(geoPoint);
+        mapView.getOverlayManager().add(line);
 
 
 
