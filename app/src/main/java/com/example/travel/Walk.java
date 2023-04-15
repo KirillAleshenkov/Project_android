@@ -88,6 +88,10 @@ public class Walk extends AppCompatActivity {
 
 
 
+
+
+
+
         List<GeoPoint> geoPoint = new ArrayList<>();
         geoPoint.add(new GeoPoint(51.3049,58.5668));
         geoPoint.add(new GeoPoint(51.4049,58.7668));
@@ -97,7 +101,6 @@ public class Walk extends AppCompatActivity {
         line.setWidth(5);
         line.setPoints(geoPoint);
         mapView.getOverlayManager().add(line);
-
 
 
 
@@ -147,6 +150,7 @@ public class Walk extends AppCompatActivity {
         mapView.getOverlays().add(mOverlay);*/
 
     }
+
     @Override
     public void onResume() {
         super.onResume();
