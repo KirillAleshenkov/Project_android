@@ -5,6 +5,8 @@ import static android.graphics.Color.rgb;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+
 import android.Manifest;
 
 import android.content.Context;
@@ -105,6 +107,10 @@ public class Walk extends AppCompatActivity {
 
 
 
+
+
+
+
         //your items
         //ArrayList<OverlayItem> items = new ArrayList<OverlayItem>();
         //items.add(new OverlayItem("Title", "Description", new GeoPoint(51.6,58.29)));
@@ -149,6 +155,16 @@ public class Walk extends AppCompatActivity {
 
         mapView.getOverlays().add(mOverlay);*/
 
+    }
+    public class ContentFragment extends Fragment {
+        public ContentFragment(){
+            super(R.layout.fragment_map);
+        }
+    }
+    public class ContentFragment1 extends Fragment {
+        public ContentFragment1(){
+            super(R.layout.fragment_button);
+        }
     }
 
     @Override
