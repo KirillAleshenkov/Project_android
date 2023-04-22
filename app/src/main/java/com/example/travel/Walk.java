@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment;
 import android.Manifest;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 //import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
@@ -19,6 +20,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 //import com.google.android.gms.maps.MapView;
 
@@ -44,12 +46,19 @@ import java.util.List;
 
 public class Walk extends AppCompatActivity {
 
+    private Button button;
+
     private final int REQUEST_PERMISSIONS_REQUEST_CODE = 1;
     private MapView mapView = null;
 
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        //button = findViewById(R.id.button2);
+        //
+        Button myButton = new Button (this);
+        myButton.setText("Push Me");
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Configuration.getInstance().load(getApplicationContext(), PreferenceManager.getDefaultSharedPreferences(getApplicationContext()));
@@ -65,6 +74,7 @@ public class Walk extends AppCompatActivity {
         GeoPoint loc = new GeoPoint(51.2049,58.5668);
         GeoPoint startPoint = loc;
         mapController.setCenter(startPoint);
+
 
 
 
@@ -135,7 +145,8 @@ public class Walk extends AppCompatActivity {
         //setContentView(mapView);
 
 
-
+        mapView.addView(myButton,200,200);
+        //mapView.getOverlays().add(myButton);
         setContentView(mapView);
 
         //int latitudeSpan = mapView.getLatitudeSpanDou
@@ -155,11 +166,6 @@ public class Walk extends AppCompatActivity {
 
         mapView.getOverlays().add(mOverlay);*/
 
-    }
-    public class ContentFragment extends Fragment {
-        public ContentFragment(){
-            super(R.layout.fragment_map);
-        }
     }
     public class ContentFragment1 extends Fragment {
         public ContentFragment1(){
