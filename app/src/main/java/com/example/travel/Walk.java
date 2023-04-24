@@ -37,6 +37,8 @@ import org.osmdroid.views.overlay.ScaleBarOverlay;
 import org.osmdroid.config.Configuration;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.views.MapView;
+import org.osmdroid.views.overlay.compass.CompassOverlay;
+import org.osmdroid.views.overlay.compass.InternalCompassOrientationProvider;
 import org.osmdroid.views.overlay.gestures.RotationGestureOverlay;
 
 import java.lang.reflect.Array;
@@ -56,27 +58,27 @@ public class Walk extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         //button = findViewById(R.id.button2);
         //
-        Button myButton = new Button (this);
+
+
+        Button myButton = new Button(this);
         myButton.setText("Push Me");
+
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Configuration.getInstance().load(getApplicationContext(), PreferenceManager.getDefaultSharedPreferences(getApplicationContext()));
         mapView = new MapView(this);
         mapView.setTileSource(TileSourceFactory.MAPNIK);
-        mapView.setBuiltInZoomControls(true);
+        mapView.setBuiltInZoomControls(false);
         mapView.setMultiTouchControls(true);
         mapView.setMinZoomLevel(4.0);
         //Статичный поворот карты
         //mapView.setMapOrientation(45.0f);
         IMapController mapController = mapView.getController();
         mapController.setZoom(9.5);
-        GeoPoint loc = new GeoPoint(51.2049,58.5668);
+        GeoPoint loc = new GeoPoint(51.2049, 58.5668);
         GeoPoint startPoint = loc;
         mapController.setCenter(startPoint);
-
-
-
 
 
         Marker marker = new Marker(mapView);
@@ -90,35 +92,22 @@ public class Walk extends AppCompatActivity {
         marker.setPosition(loc);
 
 
-
-
         //Поворот карты с помощью жестов
-        RotationGestureOverlay rotationGestureOverlay = new RotationGestureOverlay(mapView);
+        RotationGestureOverlay rotationGestureOverlay = new RotationGestureOverlay(this, mapView);
         mapView.getOverlays().add(rotationGestureOverlay);
         rotationGestureOverlay.setEnabled(true);
         mapView.getOverlays().add(marker);
 
 
-
-
-
-
-
         List<GeoPoint> geoPoint = new ArrayList<>();
-        geoPoint.add(new GeoPoint(51.3049,58.5668));
-        geoPoint.add(new GeoPoint(51.4049,58.7668));
-        geoPoint.add(new GeoPoint(51.5049,58.5668));
+        geoPoint.add(new GeoPoint(51.3049, 58.5668));
+        geoPoint.add(new GeoPoint(51.4049, 58.7668));
+        geoPoint.add(new GeoPoint(51.5049, 58.5668));
         Polyline line = new Polyline();   //see note below!
-        line.setColor(rgb(0,255,0));
+        line.setColor(rgb(0, 255, 0));
         line.setWidth(5);
         line.setPoints(geoPoint);
         mapView.getOverlayManager().add(line);
-
-
-
-
-
-
 
 
         //your items
@@ -145,10 +134,20 @@ public class Walk extends AppCompatActivity {
         //setContentView(mapView);
 
 
-        mapView.addView(myButton,200,200);
-        //mapView.getOverlays().add(myButton);
-        setContentView(mapView);
 
+        CompassOverlay mCompassOverlay = new CompassOverlay(this, new InternalCompassOrientationProvider(this), mapView);
+        mapView.getOverlays().add(mCompassOverlay);
+        mCompassOverlay.enableCompass();
+        //mapView.setTilesScaledToDpi(true);
+        //mapView.setLayerType (View.LAYER_TYPE_SOFTWARE, null); // Отключить аппаратное ускорение (требуется при рисовании трасс)
+        ScaleBarOverlay mScaleBarOverlay = new ScaleBarOverlay(mapView);
+        mapView.getOverlays().add(mScaleBarOverlay);
+        mScaleBarOverlay.setAlignBottom(true);
+        mScaleBarOverlay.setLineWidth(1 * (getResources().getDisplayMetrics()).density);
+        mScaleBarOverlay.setMaxLength(0.85f);
+        //mapView.getOverlay.add(myButton);
+        setContentView(mapView);
+        //mapView.addView(myButton,200,200);
         //int latitudeSpan = mapView.getLatitudeSpanDou
 
 
@@ -165,8 +164,18 @@ public class Walk extends AppCompatActivity {
         };
 
         mapView.getOverlays().add(mOverlay);*/
-
+        /*button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view){
+                if (view == button){
+                    GeoPoint p = mapView.getMapCenter();
+                    GeoPoint z = new GeoPoint(p.getLatitudeE6(),p.getLongitudeE6() - 1000000);
+                    mapView.animateTo(z);
+                }
+            }
+        });*/
     }
+
     public class ContentFragment1 extends Fragment {
         public ContentFragment1(){
             super(R.layout.fragment_button);
