@@ -20,6 +20,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
 import android.widget.Button;
 
 //import com.google.android.gms.maps.MapView;
@@ -62,6 +63,9 @@ public class Walk extends AppCompatActivity {
 
         Button myButton = new Button(this);
         myButton.setText("Push Me");
+        myButton.setLeft(10);
+        myButton.setRight(10);
+
 
 
         super.onCreate(savedInstanceState);
@@ -110,29 +114,6 @@ public class Walk extends AppCompatActivity {
         mapView.getOverlayManager().add(line);
 
 
-        //your items
-        //ArrayList<OverlayItem> items = new ArrayList<OverlayItem>();
-        //items.add(new OverlayItem("Title", "Description", new GeoPoint(51.6,58.29)));
-
-
-        /*ItemizedOverlayWithFocus<OverlayItem> mOverlay = new ItemizedOverlayWithFocus<OverlayItem>(items,
-                new ItemizedIconOverlay.OnItemGestureListener<OverlayItem>() {
-            @Override
-            public boolean onItemSingleTapUp(final int index,final OverlayItem item) {
-                return true;
-            }
-
-            @Override
-            public boolean onItemLongPress(final int index,final OverlayItem item) {
-                return false;
-            }
-        })
-        mOverlay.setFocusItemsOnTap(true);
-
-        mapView.getOverlays().add(mOverlay);*/
-        //mapView.getOverlays().add();
-        //setContentView(mapView);
-
 
 
         CompassOverlay mCompassOverlay = new CompassOverlay(this, new InternalCompassOrientationProvider(this), mapView);
@@ -146,34 +127,7 @@ public class Walk extends AppCompatActivity {
         mScaleBarOverlay.setLineWidth(1 * (getResources().getDisplayMetrics()).density);
         mScaleBarOverlay.setMaxLength(0.85f);
         //mapView.getOverlay.add(myButton);
-        setContentView(mapView);
-        //mapView.addView(myButton,200,200);
-        //int latitudeSpan = mapView.getLatitudeSpanDou
-
-
-        /*Overlay mOverlay = new Overlay() {
-
-            @Override
-            public boolean onScroll(MotionEvent pEvent1, MotionEvent pEvent2, float pDistanceX, float pDistanceY, MapView pMapView) {
-
-                marker.setPosition(new GeoPoint((float) pMapView.getMapCenter().getLatitude(),
-                        (float) pMapView.getMapCenter().getLongitude()));
-
-                return super.onScroll(pEvent1, pEvent2, pDistanceX, pDistanceY, pMapView);
-            }
-        };
-
-        mapView.getOverlays().add(mOverlay);*/
-        /*button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view){
-                if (view == button){
-                    GeoPoint p = mapView.getMapCenter();
-                    GeoPoint z = new GeoPoint(p.getLatitudeE6(),p.getLongitudeE6() - 1000000);
-                    mapView.animateTo(z);
-                }
-            }
-        });*/
+        mapView.addView(myButton,200,200);
     }
 
     public class ContentFragment1 extends Fragment {
