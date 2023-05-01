@@ -13,6 +13,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 //import android.content.res.Configuration;
+import android.graphics.Canvas;
+import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -27,6 +29,7 @@ import android.widget.Button;
 
 import org.osmdroid.api.IMapController;
 import org.osmdroid.util.GeoPoint;
+import org.osmdroid.views.Projection;
 import org.osmdroid.views.overlay.ItemizedIconOverlay;
 import org.osmdroid.views.overlay.ItemizedOverlayWithFocus;
 import org.osmdroid.views.overlay.Marker;
@@ -55,6 +58,33 @@ public class Walk extends AppCompatActivity {
     private MapView mapView = null;
 
 
+    public class MyViewOverlay extends Overlay{
+        public MyViewOverlay(Context context, Button button){
+            super(context);
+            button = button;
+        }
+        public void draw(Canvas canvas, MapView mapView, boolean shadow){
+            super.draw(canvas,mapView,shadow);
+            Button myButton = new Button(getApplicationContext());
+            myButton.setText("Push Me");
+            myButton.setLeft(10);
+            myButton.setRight(10);
+            if (!shadow){
+                /*Projection projection = mapView.getProjection();
+                GeoPoint geoPoint = new GeoPoint(51.2049, 58.5668);
+                Point point = projection.toPixels(geoPoint,null);
+                button.layout(point.x,point.y,point.x+button.getMeasuredWidth(),point.y + button.getMeasuredHeight());
+                button.draw(canvas);
+                //Button button = LayoutInflater.from(this).inflate(R.layout.activity_walk,null);*/
+                MyViewOverlay myViewOverlay = new MyViewOverlay(getApplicationContext(),myButton);
+            }
+
+
+        }
+    }
+
+
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         //button = findViewById(R.id.button2);
@@ -65,6 +95,7 @@ public class Walk extends AppCompatActivity {
         myButton.setText("Push Me");
         myButton.setLeft(10);
         myButton.setRight(10);
+        
 
 
 
@@ -128,6 +159,33 @@ public class Walk extends AppCompatActivity {
         mScaleBarOverlay.setMaxLength(0.85f);
         //mapView.getOverlay.add(myButton);
         mapView.addView(myButton,200,200);
+
+        //your items
+        ArrayList<OverlayItem> items = new ArrayList<OverlayItem>();
+        items.add(new OverlayItem("Title", "Description", new GeoPoint(0.0d,0.0d))); // Lat/Lon decimal degrees
+
+//the overlay
+        ItemizedOverlayWithFocus<OverlayItem> mOverlay = new ItemizedOverlayWithFocus<OverlayItem>(items,
+                new ItemizedIconOverlay.OnItemGestureListener<OverlayItem>() {
+                    @Override
+                    public boolean onItemSingleTapUp(final int index, final OverlayItem item) {
+                        //do something
+                        return true;
+                    }
+                    @Override
+                    public boolean onItemLongPress(final int index, final OverlayItem item) {
+                        return false;
+                    }
+                },getApplicationContext());
+        mOverlay.setFocusItemsOnTap(true);
+
+        mapView.getOverlays().add(mOverlay);
+        MyViewOverlay myViewOverlay = new MyViewOverlay(this,myButton);
+        mapView.getOverlays().add(myViewOverlay);
+
+
+
+        setContentView(mapView);
     }
 
     public class ContentFragment1 extends Fragment {
