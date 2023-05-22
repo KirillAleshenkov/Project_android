@@ -78,10 +78,19 @@ public class Walk extends AppCompatActivity {
                 //Button button = LayoutInflater.from(this).inflate(R.layout.activity_walk,null);*/
                 MyViewOverlay myViewOverlay = new MyViewOverlay(getApplicationContext(),myButton);
             }
+            MapView.setOnMarkerClickListever(new Marker.OnMarkerClickListener()){
+                @Override
+                public boolean onMarkerClick(Marker marker,MapView mapView){
+
+                }
+            }
 
 
         }
     }
+
+
+
 
 
 
@@ -93,6 +102,7 @@ public class Walk extends AppCompatActivity {
 
         Button myButton = new Button(this);
         myButton.setText("Push Me");
+        //myButton.setOnClickListener(this, BigTravel.class);
         myButton.setLeft(10);
         myButton.setRight(10);
         
@@ -121,10 +131,14 @@ public class Walk extends AppCompatActivity {
         Drawable drawable = getResources().getDrawable(R.drawable.marker);
         marker.setIcon(drawable);
 
-        marker.setTitle("Маркер");
-        marker.setSnippet("Комментарий");
+        marker.setTitle("Тут");
+        marker.setSnippet("Должна быть кнопка");
         marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
         marker.setPosition(loc);
+        //MotionEvent motionEvent = new MotionEvent.PointerCoords();
+        //marker.onTouchEvent(motionEvent);
+        //marker.setOnMarkerClickListener();
+
 
 
         //Поворот карты с помощью жестов
